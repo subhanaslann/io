@@ -12,6 +12,13 @@ public class NeutralCountryManager : enemyManager
     private Color ownerColor;
     private Coroutine neutralRefectionCoroutine;
 
+    protected override void Awake()
+    {
+        // Base class initialization (armyNo ayarlama)
+        base.Awake();
+        // NeutralCountryManager'a özel initialization varsa buraya
+    }
+
     private void Start()
     {
         forceLabel = GetComponentInChildren<TextMeshPro>();
