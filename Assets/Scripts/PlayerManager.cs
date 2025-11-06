@@ -27,14 +27,9 @@ public class PlayerManager : MonoBehaviour
 
         gathertheArmyCorutine = GatherTheArmy();
 
-      //  StartCoroutine(gathertheArmyCorutine);
+        // Oyuncu askerlerini otomatik artırmayı başlat
+        StartCoroutine(gathertheArmyCorutine);
 
-      // for (int i = 1; i <4; i++)
-      // {
-      //     bulletList.Add(GameObject.Find("force_" +i ));
-      //     bulletList[i-1].SetActive(false);
-      // }
-        
     }
 
     IEnumerator GatherTheArmy()
@@ -100,66 +95,26 @@ public class PlayerManager : MonoBehaviour
 
     IEnumerator GenerateSoldier()
     {
-        var soldierNo = 0;
-        while(soldierNo < playerArmyNo)
+        int initialArmyCount = playerArmyNo;
+
+        for (int soldierNo = 0; soldierNo < initialArmyCount; soldierNo++)
         {
+            // Asker kalmadıysa dur
+            if (playerArmyNo <= 0)
+                break;
+
             for (int i = 0; i < 3; i++)
             {
                 var bullet = Instantiate(BulletPrefab, StartPos.position, Quaternion.identity);
-                bullet.Initialize(chosenEnemy.transform.position, angles[i],chosenEnemy);  
+                bullet.Initialize(chosenEnemy.transform.position, angles[i], chosenEnemy);
             }
-        
-            soldierNo++;
+
+            // Her asker gönderildiğinde sayıyı azalt
+            playerArmyNo--;
+            armyNoTextMeshPro.text = playerArmyNo.ToString();
+
             yield return new WaitForSeconds(FireInterval);
         }
-        
+
     }
-    
-
-    //  yield return new WaitForSecondsRealtime(0.01f);
-        
-    
-        //}
-        
-        //   int x = 0;
-        //   float xAxis = 0,yAxis = 0;
-        //   float delay = 0f;
-        //   var row = playerArmyNo >= 3 ? 4 : 3;
-        //   
-        // //  Instantiate(soldier, transform.position + new Vector3(x - offset,y + offset, 0f), Quaternion.identity);
-        // //  x++;
-        //
-        // GameObject group = new GameObject("group_1");
-        // group.transform.position = transform.position;
-        //
-        // for (int i = 0; i < row; i++)
-        // {
-        //   GameObject force =  Instantiate(soldier, transform.position + new Vector3(xAxis - offset,yAxis + offset, 0f), Quaternion.identity);
-        //
-        //   force.transform.parent = group.transform;
-        //   
-        //   xAxis+= 0.3f;
-        //  while (x < playerArmyNo)
-        // {
-        //  GameObject plr = 
-        //    Instantiate(soldier, transform.position + new Vector3(x - offset,y + offset, 0f), Quaternion.identity);
-        //   plr.transform.DOMove(plr.transform.position + new Vector3(x - offset,y + offset, 0f), 1f).SetEase(Ease.OutQuad);
-
-        // plr.transform.DOMove(chosenEnemy.position, 1f).SetDelay(delay).SetEase(Ease.OutQuad);
-        //
-        // delay += 0.2f;
-            
-        //   x++;
-
-        // if (x == row && playerArmyNo > 1 && row > 0)
-        // {
-        //     y += 1f;
-        //     x = 0;
-        //
-        //     playerArmyNo -= row;
-        // }
-        // yield return new WaitForSecondsRealtime(0.5f);
-        //}
-       
-    }
-    
+}

@@ -5,9 +5,12 @@ using Random = UnityEngine.Random;
 
 public abstract class enemyManager : MonoBehaviour
 {
-   public int armyNo,initialAmount;
+   public int armyNo, initialAmount;
    public SpriteRenderer conquerTerritoryColor;
    public bool underAttack;
+   protected Coroutine refectionCoroutine; // Coroutine referansı
+   protected TextMeshPro labelReference; // Text referansı
+
    private void Awake()
    {
       NumberOfSolider();
@@ -19,37 +22,65 @@ public abstract class enemyManager : MonoBehaviour
       initialAmount = armyNo;
    }
 
-   protected void ConquerTerritory( TextMeshPro labelNo)
+   protected void ConquerTerritory(TextMeshPro labelNo)
    {
       armyNo--;
-
       labelNo.text = armyNo.ToString();
-     
+      labelReference = labelNo; // Referansı sakla
+
+      // Bölge fethedildi
       if (armyNo == 0)
       {
          conquerTerritoryColor.color = PlayerManager.playerManagerInstance.playerColor;
+
+         // Yenileme coroutine'i durdur
+         if (refectionCoroutine != null)
+         {
+            StopCoroutine(refectionCoroutine);
+            refectionCoroutine = null;
+         }
+      }
+      else
+      {
+         // Saldırı altında, yenilemeyi durdur
+         underAttack = true;
+         if (refectionCoroutine != null)
+         {
+            StopCoroutine(refectionCoroutine);
+            refectionCoroutine = null;
+         }
       }
 
+      // Oyuncu askeri kalmadıysa ve bu bölgenin askeri varsa, yenilemeye başla
       if (PlayerManager.playerManagerInstance.playerArmyNo == 0 && armyNo > 0)
       {
-         StartCoroutine(RefectionّForces());
-      }
-
-      if (underAttack)
-      {
-         StopCoroutine(RefectionّForces());
          underAttack = false;
+         if (refectionCoroutine == null)
+         {
+            refectionCoroutine = StartCoroutine(RefectionForces());
+         }
       }
    }
 
-   IEnumerator RefectionّForces() 
+   protected IEnumerator RefectionForces()
    {
+      // Başlamadan önce kısa bir bekleme
+      yield return new WaitForSeconds(1f);
+
       while (armyNo < initialAmount)
       {
          armyNo++;
-         yield return new WaitForSecondsRealtime(0.5f);
+
+         // Text'i güncelle
+         if (labelReference != null)
+         {
+            labelReference.text = armyNo.ToString();
+         }
+
+         yield return new WaitForSeconds(0.5f);
       }
-     
+
+      refectionCoroutine = null; // Tamamlandı
    }
 
 }
