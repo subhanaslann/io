@@ -5,6 +5,12 @@ public class CountryManager : enemyManager
 {
    [SerializeField] private TextMeshPro forceLabel;
 
+   protected override void Awake()
+   {
+      // Base class initialization (armyNo ayarlama)
+      base.Awake();
+   }
+
    private void Start()
    {
       forceLabel = GetComponentInChildren<TextMeshPro>();
