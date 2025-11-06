@@ -11,14 +11,21 @@ public abstract class enemyManager : MonoBehaviour
    protected Coroutine refectionCoroutine; // Coroutine referansı
    protected TextMeshPro labelReference; // Text referansı
 
-   private void Awake()
+   protected virtual void Awake()
    {
-      NumberOfSolider();
+      InitializeArmyCount();
    }
 
-   private void NumberOfSolider()
+   private void InitializeArmyCount()
    {
-      armyNo = Random.Range(10, 25);
+      // Inspector'da manuel değer girilmişse onu kullan
+      // Sadece armyNo 0 ise random sayı ata
+      if (armyNo == 0)
+      {
+         armyNo = Random.Range(10, 25);
+      }
+
+      // Her durumda initialAmount'u ayarla
       initialAmount = armyNo;
    }
 
