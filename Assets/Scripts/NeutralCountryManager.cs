@@ -23,8 +23,8 @@ public class NeutralCountryManager : enemyManager
         if (isNeutral)
         {
             conquerTerritoryColor.color = neutralColor;
-            // Nötr bölgeler de askerlerini yeniler (yavaş bir şekilde)
-            neutralRefectionCoroutine = StartCoroutine(NeutralRefection());
+            // NOT: Oyun başında yenileme BAŞLATILMIYOR
+            // Sadece saldırı sonrası asker azaldıysa yenileme başlayacak
         }
     }
 
@@ -44,9 +44,9 @@ public class NeutralCountryManager : enemyManager
                 isNeutral = false;
                 ownerColor = PlayerManager.playerManagerInstance.playerColor;
             }
-            else if (armyNo > 0 && isNeutral)
+            else if (armyNo > 0 && isNeutral && armyNo < initialAmount)
             {
-                // Hala nötr ve askeri var, yenilemeye devam et
+                // Hala nötr ve askeri var ama maksimumun altında, yenilemeye başla
                 if (neutralRefectionCoroutine == null)
                 {
                     neutralRefectionCoroutine = StartCoroutine(NeutralRefection());
@@ -62,8 +62,8 @@ public class NeutralCountryManager : enemyManager
 
             ConquerTerritoryByAI(forceLabel);
 
-            // Hala nötr ve askeri var, yenilemeye devam et
-            if (armyNo > 0 && isNeutral && neutralRefectionCoroutine == null)
+            // Hala nötr ve askeri var ama maksimumun altında, yenilemeye başla
+            if (armyNo > 0 && isNeutral && armyNo < initialAmount && neutralRefectionCoroutine == null)
             {
                 neutralRefectionCoroutine = StartCoroutine(NeutralRefection());
             }

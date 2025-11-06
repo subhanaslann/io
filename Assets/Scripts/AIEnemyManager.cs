@@ -22,8 +22,12 @@ public class AIEnemyManager : enemyManager
     private List<NeutralCountryManager> neutralCountries = new List<NeutralCountryManager>();
     private Coroutine aiThinkingCoroutine;
 
-    private void Awake()
+    protected override void Awake()
     {
+        // Base class initialization (armyNo ayarlama)
+        base.Awake();
+
+        // Singleton pattern
         if (instance == null)
         {
             instance = this;
