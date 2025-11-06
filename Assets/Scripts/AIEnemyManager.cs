@@ -35,6 +35,7 @@ public class AIEnemyManager : enemyManager
         forceLabel = GetComponentInChildren<TextMeshPro>();
         forceLabel.text = armyNo.ToString();
         conquerTerritoryColor = transform.parent.GetComponent<SpriteRenderer>();
+        labelReference = forceLabel; // Base class'a referansı ver
 
         // AI rengini ayarla
         conquerTerritoryColor.color = enemyColor;
@@ -44,6 +45,9 @@ public class AIEnemyManager : enemyManager
 
         // AI düşünmeye başla
         aiThinkingCoroutine = StartCoroutine(AIThinkingLoop());
+
+        // AI asker yenileme sistemini başlat
+        StartCoroutine(AIRefectionSystem());
     }
 
     private void FindNeutralCountries()
@@ -137,6 +141,38 @@ public class AIEnemyManager : enemyManager
         if (other.CompareTag("Player"))
         {
             ConquerTerritory(forceLabel);
+
+            // Fethedildiyse AI sistemlerini durdur
+            if (armyNo == 0)
+            {
+                if (aiThinkingCoroutine != null)
+                {
+                    StopCoroutine(aiThinkingCoroutine);
+                    aiThinkingCoroutine = null;
+                }
+            }
+        }
+    }
+
+    // AI'nın kendi asker yenileme sistemi
+    IEnumerator AIRefectionSystem()
+    {
+        // Oyun başında biraz bekle
+        yield return new WaitForSeconds(10f);
+
+        while (true)
+        {
+            // AI fethedilmemişse ve maksimum sayıya ulaşmamışsa yenile
+            if (armyNo > 0 && armyNo < initialAmount && conquerTerritoryColor.color == enemyColor)
+            {
+                armyNo++;
+                if (forceLabel != null)
+                {
+                    forceLabel.text = armyNo.ToString();
+                }
+            }
+
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }
